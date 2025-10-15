@@ -2,6 +2,7 @@
 
 This repository contains runnable examples built on top of **[Falcon](https://github.com/cweniger/falcon)** for dynamic simulation-based inference (DS-A / SNPE-A variants) and accompanying plotting scripts.
 
+## Installation & Requirements
 > **Core dependency:** all training, sampling, and CLI functionality comes from **Falcon**.  
 > Please install Falcon **from its official repository** by following the instructions provided there:
 > https://github.com/cweniger/falcon.git
@@ -9,7 +10,6 @@ This repository contains runnable examples built on top of **[Falcon](https://gi
 > *(Tip: using a fresh virtual environment is recommended, e.g., `conda create -n falcon-dsbi python=3.9` or `python -m venv .venv`.)*
 ---
 
-## Installation & Requirements
 Falcon installs its own runtime dependencies (PyTorch, Ray, sbi, Hydra, OmegaConf, WandB, etc.).  
 For the bimodal example and the plotting scripts in this repo, you need an extra plotting utilitie:
 
