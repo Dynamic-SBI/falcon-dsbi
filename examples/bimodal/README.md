@@ -44,10 +44,16 @@ Note: File names under data/ reflect the standard setup for this example. If you
 This example assumes you have the FALCON package available. 
 
 ```bash
+# (Optional but recommended) new env
+conda create -n falcon-dsbi python=3.9 -y && conda activate falcon-dsbi
+# or: python -m venv .venv && source .venv/bin/activate
+
 git clone https://github.com/cweniger/falcon.git
 cd falcon
 pip install .
-pip install corner matplotlib scipy joblib
+
+git clone https://github.com/lvhf123/falcon-dsbi.git
+pip install corner
 ```
 
 ## Usage
