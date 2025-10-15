@@ -92,8 +92,10 @@ def load_pair(dir_path):
     ty = (y[:, 0] - t0) / 60.0
     return (tx, x[:, 1]), (ty, y[:, 1])
 
-def plot_one_scatter(ax, pair, title, tmax=np.inf):
-    """Right-column subplot: Training/Validation scatter; filter by tmax before plotting."""
+def plot_one_scatter(ax, pair, title, tmax=np.inf, show_legend=True):
+    """Right-column subplot: Training/Validation scatter; filter by tmax before plotting.
+       Only show legend when show_legend=True.
+    """
     (tx, xid), (ty, yid) = pair
     if np.isfinite(tmax):
         m_tr = (tx <= tmax)
@@ -107,7 +109,8 @@ def plot_one_scatter(ax, pair, title, tmax=np.inf):
     ax.set_xlabel("Time [min]")
     ax.set_ylabel("Simulation ID")
     beautify_axes(ax)
-    ax.legend(loc="best", frameon=False, fontsize=11, handlelength=2.0, markerscale=3.0 )
+    if show_legend:
+        ax.legend(loc="best", frameon=False, fontsize=11, handlelength=2.0, markerscale=3.0 )
 
 def main():
     # ---- Create a 2×3 figure: left column (2 subplots), right grid (2×2) ----
@@ -182,13 +185,13 @@ def main():
     pairs = {name: load_pair(path) for name, path in METHOD_DIRS.items()}
 
     order = [
-        ("regular",      "Dynamic SBI (our method)",           axes[0, 1]),
-        ("amortized",    "Amortized",                          axes[0, 2]),
-        ("rounds_fill",  "Round-based (keep old data)",        axes[1, 1]),
-        ("rounds_renew", "Round-based (only keep new data)",   axes[1, 2]),
+        ("regular",      "Dynamic SBI (our method)",           axes[0, 1], True),
+        ("amortized",    "Amortized",                          axes[0, 2], False),
+        ("rounds_fill",  "Round-based (keep old data)",        axes[1, 1], False),
+        ("rounds_renew", "Round-based (only keep new data)",   axes[1, 2], False),
     ]
-    for key, title, ax in order:
-        plot_one_scatter(ax, pairs[key], title, tmax=T_MAX_MINUTES)
+    for key, title, ax, show_leg in order:
+        plot_one_scatter(ax, pairs[key], title, tmax=T_MAX_MINUTES, show_legend=show_leg)
 
     # ---- Save ----
     out_dir = "figures"

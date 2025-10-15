@@ -66,15 +66,32 @@ falcon sample posterior --config-name=<your_config_name> paths.graph=<your/graph
 
 Key parameters are exposed in the YAMLs and can be overridden via Hydra:
 
-Nomber of epochs: num_epochs
-
-Learning rate: lr
-
-Discard threshold: log_ratio_threshold
-
-Network type, Batch size, early stoppatience, etc.
+You can append Hydra overrides after the launch command to tweak settings on the fly, e.g.:
 
 ```bash
-falcon launch --config-name=config_regular.yaml   graph.z.estimator.num_epochs=100   graph.z.estimator.lr=0.005   graph.z.estimator.log_ratio_threshold=-10   graph.z.estimator.batch_size=512
-```
+falcon launch --config-name=config_regular.yaml \
+  graph.z.estimator.num_epochs=100 \
+  graph.z.estimator.lr=0.005 \
+  graph.z.estimator.batch_size=512 \
+  graph.z.estimator.log_ratio_threshold=-10 \
+  buffer.max_training_samples=16384 \
+  paths.graph=${hydra:run.dir}/graph_dir_alt \
+  graph.z.ray.num_gpus=0
+
+  # Posterior sampling count and output path override
+falcon sample posterior --config-name=config_regular \
+  sample.posterior.n=5000 \
+  sample.posterior.path=samples_posterior_5k.joblib \
+  paths.graph=<your/graph/path>
+
+# Proposal / prior sampling similarly:
+falcon sample proposal --config-name=config_regular \
+  sample.proposal.n=2000 sample.proposal.path=samples_proposal_2k.joblib \
+  paths.graph=<your/graph/path>
+
+falcon sample prior --config-name=config_regular \
+  sample.prior.n=2000 sample.prior.path=samples_prior_2k.joblib
+
+  ```
+
 

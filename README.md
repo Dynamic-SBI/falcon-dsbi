@@ -1,4 +1,4 @@
-# Falcon-DSBI — Dynamic Simulation-Based Inference Examples
+# 🦅 Falcon-DSBI — Dynamic Simulation-Based Inference Examples
 
 This repository contains runnable examples built on top of **[Falcon](https://github.com/cweniger/falcon)** for dynamic simulation-based inference (DS-A / SNPE-A variants) and accompanying plotting scripts.
 
@@ -46,7 +46,7 @@ falcon sample posterior --config-name=<your_config_name> paths.graph=<your/graph
 
 ## Project Structure
 
-```bash
+```
 falcon-dsbi/
 ├── README.md                          # This guide
 └── examples/
@@ -69,8 +69,6 @@ falcon-dsbi/
     │       ├── model.py                 # Simulator components and graph wiring
     │       └── gen_obs.py               # Script to regenerate x0 / z* / shift / ε
     └── .../                             # More examples coming soon (placeholder)
-
-
 ```
 
 ## What each file/folder does
@@ -84,10 +82,6 @@ falcon-dsbi/
 - `examples/bimodal/src/model.py`:  
   Defines the forward model used by the example graph node(s). Falcon calls this during simulation to generate training pairs `(z, x)`.  
   A small PyTorch module producing summary features `s` from raw observations. It is referenced by the estimator config.
-
-- `examples/bimodal/plot_*`:  
-  Standalone visualization scripts. They expect outputs produced by Falcon (e.g., `samples_posterior.joblib`, `graph_dir/*`) and will generate figures such as corner plots or training diagnostics.  
-  Install `corner`, `matplotlib`, `scipy`, `joblib` to use these.
 
 - `examples/bimodal/data/`:  
   Location for observation arrays and any auxiliary `.npy` inputs the example needs. `gen_obs.py` writes here.
@@ -147,3 +141,14 @@ If you use **Falcon-DSBI** or **Falcon** in your research, please cite both repo
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.  
+If you plan a larger change, consider opening an issue first to discuss the design.
+
+## Support
+For questions and support, please open an issue on GitHub:  
+- Falcon-DSBI: https://github.com/lvhf123/falcon-dsbi/issues  
+- Falcon (core framework): https://github.com/cweniger/falcon/issues
+
+You can also mention maintainers in your issue for quicker feedback.
