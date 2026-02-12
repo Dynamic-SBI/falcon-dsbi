@@ -10,13 +10,14 @@ from scipy.ndimage import gaussian_filter1d
 from matplotlib.ticker import FixedLocator, FixedFormatter
 from matplotlib.patches import Patch
 from JSD import compute_js_divergence
+from sbi.utils.metrics import c2st
 
 # ---------------- paths & constants ----------------
 # 1) Your posterior samples (unchanged)
-PATH_POSTERIOR   = "samples_posterior.joblib"
+PATH_POSTERIOR   = "samples_posterior1.joblib"
 
 # 2) Training stats are now saved as separate files under this directory (modify to your actual path)
-NODE_DIR = "outputs/2025-10-12/07-12-36/graph_dir/z"
+NODE_DIR = "outputs/2026-01-03/14-03-53/graph_dir/z"
 
 # 3) Other data (unchanged)
 PATH_X_OBS       = "data/x_obs_10dim.npy"
@@ -395,6 +396,40 @@ def main():
     # JSD (print)
     jsd = compute_js_divergence(Z_net_s, Z_theory_s, 10)
     print(f"JS Divergence (Network vs Theory): {jsd}")
+
+    # X_ref, X_learned: torch.Tensor, shape (N, D)
+    X_ref = torch.as_tensor(Z_theory_s, dtype=torch.float32)
+    X_learned = torch.as_tensor(Z_net_s, dtype=torch.float32)
+    score = c2st(X_ref, X_learned)   # 0.5 means perfect match, >0.5 means distinguishable (higher is more distinguishable)
+    print('C2ST score: ', float(score))
+
+    def sample_theory(N):
+        modes = torch.randint(0, 2, (N, DIM), dtype=torch.int64)
+        mu_mat = torch.where(modes == 0, mu1[None, :], mu2[None, :]).to(torch.float64)
+        return (mu_mat + torch.randn(N, DIM, dtype=torch.float64) * SIGMA).numpy()
+
+    Z1 = sample_theory(1000)
+    Z2 = sample_theory(1000)
+    print("C2ST(theory,theory)=", float(c2st(torch.tensor(Z1), torch.tensor(Z2))))
+
+    Z = Z_net_s
+    perm = np.random.permutation(len(Z))
+    n = 500
+    Z1 = Z[perm[:n]]
+    Z2 = Z[perm[n:2*n]]
+    print("C2ST(net,net)=", float(c2st(torch.tensor(Z1), torch.tensor(Z2))))
+
+    scores_1d = []
+    for d in range(DIM):
+        s = float(c2st(
+            torch.tensor(Z_theory_s[:, [d]]),
+            torch.tensor(Z_net_s[:, [d]])
+        ))
+        scores_1d.append(s)
+
+    print("1D C2ST per dim:", scores_1d, "mean=", float(np.mean(scores_1d)))
+    print("10D C2ST:", float(c2st(torch.tensor(Z_theory_s), torch.tensor(Z_net_s))))
+
 
     # Save
     out_dir = os.path.join(DIR_OUT, "figures")
